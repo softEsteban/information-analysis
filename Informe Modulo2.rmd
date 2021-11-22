@@ -1,0 +1,141 @@
+---
+title: "Análisis de información cuantitativa en R"
+author: "Esteban Toro"
+date: "11/21/2021"
+output:
+  html_document:
+      toc: yes
+      toc_depth: 2
+lang: es-Es
+---
+El objetivo general es prácticar los conocimientos adquiridos sobre análisis de datos usando R y RStudio. En su contexto, la investigación pretendía calcular qué proporción de la comunidad hablaba la lengua en cuestión.
+
+```{r echo=FALSE, warning=FALSE }
+datosLenguas <- read.csv("Lenguas en Colombia - Copy.csv", header= T, sep=",")
+proporcion_subg <- datosLenguas$Porcentaje
+proporcion_na <- as.numeric(proporcion_subg)
+proporcion <- na.omit(proporcion_na)
+```
+
+---
+
+# Información general
+
+**Base de datos** [Lenguas indígenas en peligro de extinción](https://www.datos.gov.co/Cultura/LENGUAS-NATIVAS-COLOMBIANAS-EN-PELIGRO-DE-EXTINCI-/2fnk-2vx7)
+
+**Variables** Nombre de la lengua -Departamento - Familia lingüística - Número de habitantes - Número de hablantes - Vitalidad - Proporción
+
+**Variable de estudio** Proporción = (n.habitantes / n.hablantes)
+
+---
+
+# Estadísticos descriptivos (tendencia central y localización)
+
+### Media
+```{r}
+mean(proporcion)
+```
+
+### Mediana
+```{r}
+median(proporcion)
+```
+
+### Moda
+```{r}
+frecuencias <- data.frame(table(proporcion))
+mode <- frecuencias[which.max(frecuencias$Freq),1]
+mode
+```
+
+### Cuantiles
+```{r}
+quantile(proporcion)
+```
+
+### Cuantil 0.65
+```{r}
+quantile(proporcion, 0.65)
+```
+
+### Resumen estadístico
+```{r}
+summary(proporcion)
+```
+
+
+---
+
+# Estadísticos de dispersión
+
+### Varianza
+```{r}
+var(proporcion)
+```
+
+### Desviación estándar
+```{r}
+sd(proporcion)
+```
+
+### Coeficiente de variación
+```{r}
+x <- mean(proporcion)
+y <- sd(proporcion)
+
+cv <- (y/x)*100
+cv
+```
+
+---
+
+# Estadísticos de forma y simetría
+
+### Coeficiente de asimetría
+```{r}
+library(psych)
+skew(proporcion)
+```
+
+### Curtosis
+```
+- Aceptablement simétrica  -1 < x < 1  
+- Asimetría negativa       x < 1      
+- Asimetría positiva       x > 1   
+```
+```{r}
+kurtosi(proporcion)
+```
+
+---
+
+# Gráficos y plots
+
+### Histograma y diagrama de caja y bigotes
+
+```{r}
+library(sfsmisc)
+histBxp(proporcion, main="Histograma de lenguas indígenas en extinción", col="orange", boxcol="lightcoral", medcol="indianred4", xlab="Habitantes que hablan la lengua", ylab="Frecuencias")
+```
+
+---
+
+### Densidad
+
+```{r}
+dx <- density(proporcion)
+plot(dx, main="Densidad", xlab="proporcion", ylab="frecuencias")
+polygon(dx, density=15, angle=90, lwd=2, col="blue")
+points(mean(proporcion),1, pch=10, lwd=2)
+```
+
+---
+
+*Informe desarrollado con R Markdown*
+*[GitHub Profile](https://github.com/softEsteban)*
+
+
+
+
+
+
