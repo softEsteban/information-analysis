@@ -11,8 +11,8 @@ lang: es-Es
 El objetivo general es prácticar los conocimientos adquiridos sobre análisis de datos usando R y RStudio. En su contexto, la investigación pretendía calcular qué proporción de la comunidad hablaba la lengua en cuestión.
 
 ```{r echo=FALSE, warning=FALSE }
-datosLenguas <- read.csv("Lenguas en Colombia - Copy.csv", header= T, sep=",")
-proporcion_subg <- datosLenguas$Porcentaje
+datosLenguas <- read.csv("Lenguas en Colombia - Copy2.csv", header= T, sep=",")
+proporcion_subg <- datosLenguas$Proporcion
 proporcion_na <- as.numeric(proporcion_subg)
 proporcion <- na.omit(proporcion_na)
 ```
@@ -23,9 +23,21 @@ proporcion <- na.omit(proporcion_na)
 
 **Base de datos** [Lenguas indígenas en peligro de extinción](https://www.datos.gov.co/Cultura/LENGUAS-NATIVAS-COLOMBIANAS-EN-PELIGRO-DE-EXTINCI-/2fnk-2vx7)
 
-**Variables** Nombre de la lengua -Departamento - Familia lingüística - Número de habitantes - Número de hablantes - Vitalidad - Proporción
+**Variables** Nombre de la lengua -Departamento - Familia lingüística - Número de habitantes - Número de hablantes - Vitalidad - Proporción - Categoría - nCat
 
 **Variable de estudio** Proporción = (n.habitantes / n.hablantes)
+
+---
+
+# Vista previa de los datos
+
+Para realizar el análisis de los datos era necesario calcular nuevas variables crearlas. Ese es el caso de "Proporción", "Categoría" y "nCat". Las últimas dos para mostrar la proporción de personas de una comunidad que aún hablan la lengua.En la base de datos existía una variable categórica llamada "Vitalidad", pero decidí reformularla de nuevo. Esto con el fin de realizar un gráfico de torta o Pie Chart.
+
+
+```{r}
+head(datosLenguas)
+```
+
 
 ---
 
@@ -115,7 +127,7 @@ kurtosi(proporcion)
 
 ```{r}
 library(sfsmisc)
-histBxp(proporcion, main="Histograma de lenguas indígenas en extinción", col="orange", boxcol="lightcoral", medcol="indianred4", xlab="Habitantes que hablan la lengua", ylab="Frecuencias")
+histBxp(proporcion, main="Histograma de lenguas indígenas en extinción", col="orange", boxcol="lightcoral", medcol="indianred4", xlab="Indice de las personas de la población que habla la lengua", ylab="Frecuencias")
 ```
 
 ---
@@ -131,9 +143,33 @@ points(mean(proporcion),1, pch=10, lwd=2)
 
 ---
 
-*Informe desarrollado con R Markdown*
-*[GitHub Profile](https://github.com/softEsteban)*
+### Exploración por categorías
 
+```{r,  message=FALSE}
+categorias <- c("1. Vulnerable", "2. Peligro", "3. Peligro de extincion", "4. Situación crítica")
+colores <- c("gold1","darkorange1", "coral1", "firebrick1")
+
+# Pie Chart with Percentages
+slices <- c(17,19,18,13)
+lbls <- c("1. Vulnerable", "2. Peligro", "3. Peligro de extincion",
+          "4. Situación crítica")
+pct <- round(slices/sum(slices)*100)
+lbls <- paste(lbls, pct) # add percents to labels
+lbls <- paste(lbls,"%",sep="") # ad % to labels
+
+# 3D Exploded Pie Chart
+library(plotrix)
+pie3D(slices,labels=lbls, labelcex=0.99,  explode=0.05,
+      main="Vitalidad de las lenguas por categorias", col=colores)
+
+```
+
+
+*Informe desarrollado con R Markdown*
+
+*<a href="https://github.com/softEsteban" target="_blank">Github- softEsteban</a>*
+
+*<a href="https://github.com/softEsteban/informationAnalysis" target="_blank">Github Code Repository</a>*
 
 
 
